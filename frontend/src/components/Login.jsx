@@ -1,14 +1,16 @@
 import React from 'react';
+import './style.css';
 
 const Login = () => {
   const handleLogin = () => {
-    window.location.href = 'http://localhost:5000/auth/google';  // Make sure this points to your backend route
+    window.location.href = 'http://localhost:5000/auth/google';
   };
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center">
-      <h1 className="text-3xl font-bold mb-4">MagicSlides Email Classifier</h1>
-      <button onClick={handleLogin} className="bg-blue-500 text-white px-4 py-2 rounded">
+    <div className="login-page">
+      <h1 className="app-title">MagicSlides Email Classifier</h1>
+      <p className="login-description">Sign in with Google to access and classify your Gmail emails.</p>
+      <button className="google-login-btn" onClick={handleLogin}>
         Sign in with Google
       </button>
     </div>

@@ -1,66 +1,123 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./style.css";
 
-const EmailList = ({ token }) => {
+const EmailList = ({ token, user, onLogout }) => {
   const [emails, setEmails] = useState([]);
-  const [key, setKey] = useState(localStorage.getItem('openaiKey') || '');
+  const [loading, setLoading] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    if (token && key) {
+    if (token) {
       fetchEmails(token);
     }
-  }, [token, key]);
+  }, [token]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    };
+
+    if (showModal) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showModal]);
 
   const fetchEmails = async (accessToken) => {
-    localStorage.setItem('openaiKey', key);
+    setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/emails/fetch', {
+      const res = await axios.post("http://localhost:5000/emails/fetch", {
         accessToken,
         count: 15,
-        openaiKey: key,
       });
       setEmails(res.data.messages);
     } catch (error) {
-      console.error('Error fetching emails:', error);
-      alert('Failed to fetch emails.');
+      console.error("Error fetching emails:", error);
+      alert("Failed to fetch emails.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Emails</h2>
-        <div className="flex flex-wrap items-center gap-4 mb-6">
-          <input
-            className="border border-gray-300 px-4 py-2 rounded-lg w-full sm:w-auto flex-1"
-            type="password"
-            value={key}
-            onChange={(e) => setKey(e.target.value)}
-            placeholder="Enter OpenAI API Key"
-          />
-          <button
-            onClick={() => fetchEmails(token)}
-            className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-all"
-          >
-            Fetch Emails
-          </button>
-        </div>
+  const fetchEmailById = async (id) => {
+    try {
+      const res = await axios.get(`http://localhost:5000/emails/${id}`, {
+        params: { accessToken: token },
+      });
+      setSelectedEmail(res.data);
+      setShowModal(true);
+    } catch (err) {
+      console.error("Failed to fetch email content:", err);
+      alert("Could not load full email.");
+    }
+  };
 
-        <ul className="divide-y divide-gray-200">
-          {emails.length > 0 ? (
-            emails.map((email, index) => (
-              <li key={index} className="py-4">
-                <div className="flex flex-col">
-                  <span className="text-sm text-indigo-600 font-semibold">{email.category}</span>
-                  <p className="text-gray-700 mt-1">{email.snippet}</p>
-                </div>
-              </li>
-            ))
-          ) : (
-            <p className="text-gray-500">No emails to display yet.</p>
-          )}
-        </ul>
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedEmail(null);
+  };
+
+  return (
+    <div className="email-page">
+      <div className="email-header">
+        <div className="user-info">
+          <span className="user-name">👤 {user?.name || "User"}</span>
+        </div>
+        <button className="logout-button" onClick={onLogout}>
+          Logout 🔓
+        </button>
       </div>
+
+      <div className="email-container">
+        <h2 className="email-heading">Your Emails</h2>
+
+        {loading ? (
+          <p className="loading-text">📬 Your emails are loading...</p>
+        ) : (
+          <ul className="email-list">
+            {emails.map((email, index) => (
+              <li
+                key={index}
+                className="email-item"
+                onClick={() => fetchEmailById(email.id)}
+              >
+                <div className="email-details">
+                  <strong>📧 {email.from}</strong>
+                  <div>📝 {email.subject}</div>
+                  <div>📂 {email.category}</div>
+                </div>
+                <p className="email-snippet">{email.snippet}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Modal */}
+      {showModal && selectedEmail && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="modal-close" onClick={closeModal}>
+              ×
+            </button>
+            <div className="email-details">
+              <strong>📧 {selectedEmail.from}</strong>
+              <div>📝 {selectedEmail.subject}</div>
+            </div>
+            <div
+              className="email-body"
+              dangerouslySetInnerHTML={{ __html: selectedEmail.body }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

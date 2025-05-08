@@ -13,8 +13,8 @@ const app = express();
 // CORS configuration (Allow frontend on localhost:5173)
 app.use(
   cors({
-    origin: 'http://localhost:5173', // Correct for Vite frontend
-    credentials: true,
+    origin: 'http://localhost:5173', // Frontend URL
+    credentials: true, // Allow credentials (cookies)
   })
 );
 
@@ -25,8 +25,14 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      secure: false,      // true only in production with HTTPS
+      httpOnly: true,
+      sameSite: 'lax',    // 'none' only for HTTPS; 'lax' works for local
+    }
   })
 );
+
 
 // Passport initialization
 app.use(passport.initialize());

@@ -1,10 +1,10 @@
-import { ChatOpenAI } from '@langchain/openai';
+import { ChatOpenAI } from "@langchain/openai";
 
 export const classifyEmails = async (emails, openaiKey) => {
   const model = new ChatOpenAI({
     openAIApiKey: openaiKey,
     temperature: 0.2,
-    modelName: 'gpt-3.5-turbo',
+    modelName: "gpt-4o",
   });
 
   // Classify each email using GPT
@@ -14,10 +14,12 @@ export const classifyEmails = async (emails, openaiKey) => {
 
       try {
         const res = await model.invoke(prompt);
-        return { ...email, category: res.text };
+        email.category = res.trim();
+        return email;
       } catch (err) {
-        console.error('OpenAI Error:', err.message);
-        return { ...email, category: 'Error (Quota Exceeded)' };
+        console.error("Error classifying email:", err);
+        email.category = "Unclassified";
+        return email;
       }
     })
   );

@@ -1,0 +1,283 @@
+/* General Page Styling */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb;
+  }
+  
+  .email-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Header */
+  .email-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background-color: #4f46e5;
+    color: white;
+    align-items: center;
+  }
+  
+  .user-name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  .logout-button {
+    background-color: #ef4444;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-button:hover {
+    background-color: #dc2626;
+  }
+  
+  /* Email Content */
+  .email-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .email-heading {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
+  
+  .api-key-input-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .api-key-input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+  }
+  
+  .fetch-button {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .fetch-button:hover {
+    background-color: #059669;
+  }
+  
+  .fetch-button.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* Email List */
+  .email-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .email-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .email-category {
+    color: #4f46e5;
+    font-weight: bold;
+    font-size: 0.875rem;
+  }
+  
+  .email-snippet {
+    color: #374151;
+    margin-top: 0.5rem;
+  }
+  
+  .no-emails-text {
+    color: #9ca3af;
+    font-style: italic;
+  }
+
+  /* Login Page */
+.login-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f3f4f6;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .app-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #4f46e5;
+    margin-bottom: 1rem;
+  }
+  
+  .login-description {
+    font-size: 1.2rem;
+    color: #374151;
+    margin-bottom: 2rem;
+  }
+  
+  .google-login-btn {
+    background-color: #4285f4;
+    color: white;
+    font-size: 1rem;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
+  
+  .google-login-btn:hover {
+    background-color: #357ae8;
+  }
+  
+  .loading-text {
+    font-size: 1rem;
+    font-style: italic;
+    color: #555;
+    padding: 1rem 0;
+  }
+  
+
+
+  .email-details {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  
+  .email-page {
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+  }
+  
+  .email-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .email-container {
+    margin-top: 1.5rem;
+  }
+  
+  .email-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .email-item {
+    padding: 1rem;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .email-item:hover {
+    background-color: #e6e6e6;
+  }
+  
+  .email-category {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .email-snippet {
+    color: #333;
+    margin-top: 0.3rem;
+  }
+  
+  /* ✅ Modal styling */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 2rem;
+    max-width: 700px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    position: relative;
+    /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); */
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+  }
+  .modal-close:hover {
+    color: red;
+  }
+  /* ✅ Render HTML inside emails properly */
+  .email-body {
+    margin-top: 1rem;
+    font-size: 15px;
+    line-height: 1.6;
+     /* white-space: pre-wrap;  */
+     /*optional*/
+  /* word-wrap: break-word; */
+  }
+  
+  .email-body img {
+    max-width: 100%;
+    height: auto;
+    margin: 10px 0;
+  }
+  
+  .email-body a {
+    color: #007bff;
+    text-decoration: underline;
+  }
+  
+  .email-body p {
+    margin-bottom: 1em;
+  }
+  
