@@ -7,6 +7,9 @@ const EmailList = ({ token, user, onLogout }) => {
   const [loading, setLoading] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [classificationCount, setClassificationCount] = useState();
+  const [classifiedEmails, setClassifiedEmails] = useState([]);
+  const backendURL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     if (token) {
@@ -20,11 +23,9 @@ const EmailList = ({ token, user, onLogout }) => {
         closeModal();
       }
     };
-
     if (showModal) {
       window.addEventListener("keydown", handleKeyDown);
     }
-
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
@@ -33,9 +34,9 @@ const EmailList = ({ token, user, onLogout }) => {
   const fetchEmails = async (accessToken) => {
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/emails/fetch", {
+      const res = await axios.post(`${backendURL}/emails/fetch`, {
         accessToken,
-        count: 15,
+        count: 30,
       });
       setEmails(res.data.messages);
     } catch (error) {
@@ -48,7 +49,7 @@ const EmailList = ({ token, user, onLogout }) => {
 
   const fetchEmailById = async (id) => {
     try {
-      const res = await axios.get(`http://localhost:5000/emails/${id}`, {
+      const res = await axios.get(`${backendURL}/emails/${id}`, {
         params: { accessToken: token },
       });
       setSelectedEmail(res.data);
@@ -62,6 +63,25 @@ const EmailList = ({ token, user, onLogout }) => {
   const closeModal = () => {
     setShowModal(false);
     setSelectedEmail(null);
+  };
+
+  const handleClassify = async () => {
+    const emailsToClassify = emails.slice(0, classificationCount);
+    try {
+      const res = await axios.post(`${backendURL}/emails/classify`, {
+        accessToken: token,
+        emails: emailsToClassify,
+      });
+      setClassifiedEmails(res.data.classified);
+    } catch (err) {
+      console.error("Classification failed:", err);
+      alert("Failed to classify emails.");
+    }
+  };
+
+  const getCategory = (emailId) => {
+    const classified = classifiedEmails.find((e) => e.id === emailId);
+    return classified ? classified.category : null;
   };
 
   return (
@@ -78,6 +98,25 @@ const EmailList = ({ token, user, onLogout }) => {
       <div className="email-container">
         <h2 className="email-heading">Your Emails</h2>
 
+        <div className="classification-controls">
+          <label htmlFor="count-select">Select number</label>
+          <select
+            id="count-select"
+            value={classificationCount}
+            onChange={(e) => setClassificationCount(Number(e.target.value))}
+            className="count-dropdown"
+          >
+            {Array.from({ length: 30 }, (_, i) => i + 1).map((num) => (
+              <option key={num} value={num}>
+                {num}
+              </option>
+            ))}
+          </select>
+          <button className="classify-button" onClick={handleClassify}>
+            Classify
+          </button>
+        </div>
+
         {loading ? (
           <p className="loading-text">📬 Your emails are loading...</p>
         ) : (
@@ -90,8 +129,9 @@ const EmailList = ({ token, user, onLogout }) => {
               >
                 <div className="email-details">
                   <strong>📧 {email.from}</strong>
-                  <div>📝 {email.subject}</div>
-                  <div>📂 {email.category}</div>
+                  {getCategory(email.id) && (
+                    <div className="email-category">📂 {getCategory(email.id)}</div>
+                  )}
                 </div>
                 <p className="email-snippet">{email.snippet}</p>
               </li>
@@ -100,7 +140,6 @@ const EmailList = ({ token, user, onLogout }) => {
         )}
       </div>
 
-      {/* Modal */}
       {showModal && selectedEmail && (
         <div className="modal-overlay">
           <div className="modal-content">

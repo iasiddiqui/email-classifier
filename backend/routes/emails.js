@@ -4,7 +4,6 @@ import { classifyEmails } from "../utils/classifyEmails.js";
 
 const router = express.Router();
 
-// POST /emails/fetch - Fetch latest emails and classify them
 router.post("/fetch", async (req, res) => {
   const { accessToken, count = 15 } = req.body;
   const openaiKey = process.env.OPENAI_API_KEY;
@@ -58,7 +57,6 @@ router.post("/fetch", async (req, res) => {
   }
 });
 
-// GET /emails/:id - Fetch full email content (plain text or HTML)
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const { accessToken } = req.query;
@@ -80,7 +78,6 @@ router.get("/:id", async (req, res) => {
 
     const decodeBase64 = (str) => Buffer.from(str, "base64").toString("utf-8");
 
-    // Traverse payload to extract HTML or plain text
     const extractBody = (part) => {
       if (part.mimeType === "text/html" && part.body?.data) {
         return decodeBase64(part.body.data);

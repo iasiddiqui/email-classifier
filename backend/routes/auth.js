@@ -6,26 +6,25 @@ import dotenv from 'dotenv';
 dotenv.config();
 const router = express.Router();
 
-// ✅ Configure Google OAuth
+// Google OAuth strategy
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:5000/auth/google/callback',
+      callbackURL: `${process.env.SERVER_URL}/auth/google/callback`,
     },
     (accessToken, refreshToken, profile, done) => {
-      profile.accessToken = accessToken; // 🔐 Store token in user object
+      profile.accessToken = accessToken;
       return done(null, profile);
     }
   )
 );
 
-// ✅ Session management
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
-// ✅ Start OAuth flow
+// Start OAuth
 router.get(
   '/google',
   passport.authenticate('google', {
@@ -33,18 +32,17 @@ router.get(
   })
 );
 
-// ✅ Handle OAuth callback
+// Handle callback
 router.get(
   '/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
     console.log('🔐 User logged in:', req.user);
-    // Don't send token in URL — let frontend fetch it from /auth/token
-    res.redirect('http://localhost:5173/dashboard'); // Or wherever your dashboard is
+    res.redirect(`${process.env.CLIENT_URL}/email`);
   }
 );
 
-// ✅ Securely expose user info
+// Get user info
 router.get('/user', (req, res) => {
   if (req.isAuthenticated()) {
     const { displayName, emails, photos } = req.user;
@@ -58,7 +56,7 @@ router.get('/user', (req, res) => {
   }
 });
 
-// ✅ Securely expose access token
+// Get access token
 router.get('/token', (req, res) => {
   if (req.isAuthenticated() && req.user?.accessToken) {
     return res.status(200).json({ accessToken: req.user.accessToken });
@@ -67,12 +65,12 @@ router.get('/token', (req, res) => {
   }
 });
 
-// ✅ Logout
+// Logout
 router.get('/logout', (req, res) => {
   req.logout(() => {
     req.session.destroy();
     res.clearCookie('connect.sid');
-    res.redirect('http://localhost:5173');
+    res.redirect(process.env.CLIENT_URL);
   });
 });
 

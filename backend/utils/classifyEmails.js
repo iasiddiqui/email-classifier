@@ -7,7 +7,6 @@ export const classifyEmails = async (emails, openaiKey) => {
     modelName: "gpt-4o",
   });
 
-  // Classify each email using GPT
   const classified = await Promise.all(
     emails.map(async (email) => {
       const prompt = `Classify this email into one of these categories: Important, Promotions, Social, Marketing, Spam, General. Email content: "${email.snippet}"`;

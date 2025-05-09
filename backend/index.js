@@ -10,11 +10,11 @@ dotenv.config();
 
 const app = express();
 
-// CORS configuration (Allow frontend on localhost:5173)
+// CORS configuration (Allow frontend)
 app.use(
   cors({
-    origin: 'http://localhost:5173', // Frontend URL
-    credentials: true, // Allow credentials (cookies)
+    origin: process.env.CLIENT_URL,
+    credentials: true,
   })
 );
 
@@ -26,15 +26,14 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,      // true only in production with HTTPS
+      secure: false,
       httpOnly: true,
-      sameSite: 'lax',    // 'none' only for HTTPS; 'lax' works for local
+      sameSite: 'lax',
     }
   })
 );
 
-
-// Passport initialization
+// Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -42,4 +41,4 @@ app.use(passport.session());
 app.use('/auth', authRoutes);
 app.use('/emails', emailRoutes);
 
-app.listen(5000, () => console.log('Backend running on http://localhost:5000'));
+app.listen(5000, () => console.log(`Backend running on ${process.env.SERVER_URL}`));
