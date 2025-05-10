@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 
-// CORS configuration (Allow frontend)
+// CORS configuration
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -33,7 +33,7 @@ app.use(
   })
 );
 
-// Passport
+// Passport setup
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -41,4 +41,16 @@ app.use(passport.session());
 app.use('/auth', authRoutes);
 app.use('/emails', emailRoutes);
 
-app.listen(5000, () => console.log(`Backend running on ${process.env.SERVER_URL}`));
+// Root route to fix "Cannot GET /"
+app.get('/', (req, res) => {
+  res.send('🚀 Email Classifier Backend is running...');
+});
+
+// Health check route (optional)
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'Backend is healthy' });
+});
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

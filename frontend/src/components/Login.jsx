@@ -9,7 +9,7 @@ const Login = () => {
   return (
     <div className="login-page">
       <h1 className="app-title">MagicSlides Email Classifier</h1>
-      <p className="login-description">Sign in with Google to access and classify your Gmail emails.</p>
+      <p className="login-description">Sign in with Google to access and classify your emails.</p>
       <button className="google-login-btn" onClick={handleLogin}>
         Sign in with Google
       </button>
