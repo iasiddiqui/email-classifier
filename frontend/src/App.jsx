@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { HashRouter } from 'react-router-dom';
 import Login from './components/Login';
 import EmailList from './components/EmailList';
 import axios from 'axios';
@@ -44,10 +45,18 @@ const App = () => {
   };
 
   if (!token || !user) {
-    return <Login />;
+    return (
+      <HashRouter>
+        <Login />
+      </HashRouter>
+    );
   }
 
-  return <EmailList token={token} user={user} onLogout={logout} />;
+  return (
+    <HashRouter>
+      <EmailList token={token} user={user} onLogout={logout} />
+    </HashRouter>
+  );
 };
 
 export default App;
