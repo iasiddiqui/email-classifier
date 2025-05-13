@@ -7,8 +7,7 @@ const EmailList = ({ token, user, onLogout }) => {
   const [loading, setLoading] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [classificationCount, setClassificationCount] = useState();
-  const [classifiedEmails, setClassifiedEmails] = useState([]);
+  const [classificationCount, setClassificationCount] = useState(1);
   const backendURL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
@@ -65,23 +64,23 @@ const EmailList = ({ token, user, onLogout }) => {
     setSelectedEmail(null);
   };
 
-  const handleClassify = async () => {
-    const emailsToClassify = emails.slice(0, classificationCount);
-    try {
-      const res = await axios.post(`${backendURL}/emails/classify`, {
-        accessToken: token,
-        emails: emailsToClassify,
-      });
-      setClassifiedEmails(res.data.classified);
-    } catch (err) {
-      console.error("Classification failed:", err);
-      alert("Failed to classify emails.");
-    }
+  const getCategory = (emailId) => {
+    const email = emails.find((e) => e.id === emailId);
+    return email?.category || null;
   };
 
-  const getCategory = (emailId) => {
-    const classified = classifiedEmails.find((e) => e.id === emailId);
-    return classified ? classified.category : null;
+  const handleReclassify = async () => {
+    const selectedEmails = emails.slice(0, classificationCount);
+    try {
+      const res = await axios.post(`${backendURL}/emails/fetch`, {
+        accessToken: token,
+        count: classificationCount,
+      });
+      setEmails(res.data.messages);
+    } catch (err) {
+      console.error("Reclassification failed:", err);
+      alert("Failed to re-fetch and classify emails.");
+    }
   };
 
   return (
@@ -112,7 +111,7 @@ const EmailList = ({ token, user, onLogout }) => {
               </option>
             ))}
           </select>
-          <button className="classify-button" onClick={handleClassify}>
+          <button className="classify-button" onClick={handleReclassify}>
             Classify
           </button>
         </div>
@@ -121,19 +120,21 @@ const EmailList = ({ token, user, onLogout }) => {
           <p className="loading-text">📬 Your emails are loading...</p>
         ) : (
           <ul className="email-list">
-            {emails.map((email, index) => (
+            {emails.map((email) => (
               <li
-                key={index}
+                key={email.id}
                 className="email-item"
                 onClick={() => fetchEmailById(email.id)}
               >
                 <div className="email-details">
                   <strong>📧 {email.from}</strong>
+                  <p>{email.subject}</p>
                   {getCategory(email.id) && (
-                    <div className="email-category">📂 {getCategory(email.id)}</div>
+                    <span className="email-category">
+                      📂 {getCategory(email.id)}
+                    </span>
                   )}
                 </div>
-                <p className="email-snippet">{email.snippet}</p>
               </li>
             ))}
           </ul>
@@ -141,19 +142,14 @@ const EmailList = ({ token, user, onLogout }) => {
       </div>
 
       {showModal && selectedEmail && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button className="modal-close" onClick={closeModal}>
-              ×
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>{selectedEmail.subject}</h3>
+            <p><strong>From:</strong> {selectedEmail.from}</p>
+            <div className="modal-body">{selectedEmail.body}</div>
+            <button className="close-modal" onClick={closeModal}>
+              Close ❌
             </button>
-            <div className="email-details">
-              <strong>📧 {selectedEmail.from}</strong>
-              <div>📝 {selectedEmail.subject}</div>
-            </div>
-            <div
-              className="email-body"
-              dangerouslySetInnerHTML={{ __html: selectedEmail.body }}
-            />
           </div>
         </div>
       )}
