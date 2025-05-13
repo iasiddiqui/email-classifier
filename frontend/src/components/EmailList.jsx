@@ -54,8 +54,8 @@ const EmailList = ({ token, user, onLogout }) => {
       });
       setSelectedEmail(res.data);
       setShowModal(true);
-    } catch (err) {
-      console.error("Failed to fetch email content:", err);
+    } catch (err) 
+      console.error("Failed to fetch email :", err);
       alert("Could not load full email.");
     }
   };
