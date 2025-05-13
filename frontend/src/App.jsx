@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter } from 'react-router-dom';
 import Login from './components/Login';
 import EmailList from './components/EmailList';
 import axios from 'axios';
+
 
 const App = () => {
   const [token, setToken] = useState(null);
@@ -45,18 +45,10 @@ const App = () => {
   };
 
   if (!token || !user) {
-    return (
-      <HashRouter>
-        <Login />
-      </HashRouter>
-    );
+    return <Login />;
   }
 
-  return (
-    <HashRouter>
-      <EmailList token={token} user={user} onLogout={logout} />
-    </HashRouter>
-  );
+  return <EmailList token={token} user={user} onLogout={logout} />;
 };
 
 export default App;
