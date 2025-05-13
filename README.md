@@ -82,7 +82,7 @@ PORT=5000
 
 ### Screenshots
 
-[home](./frontend/src/assets/home.png)
-[login](./frontend/src/assets/login.png)
-[emaiol page](./frontend/src/assets/email.png)
-[preview](./frontend/src/assets/email%20preview.png)
+![home](./frontend/src/assets/home.png)
+![login](./frontend/src/assets/login.png)
+![emaiol page](./frontend/src/assets/email.png)
+![preview](./frontend/src/assets/email%20preview.png)
