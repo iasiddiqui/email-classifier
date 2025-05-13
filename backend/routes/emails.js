@@ -100,8 +100,8 @@ router.get("/:id", async (req, res) => {
     res.json({
       id: message.id,
       snippet: message.snippet,
-      from: message.payload.headers.find(h => h.name === "From")?.value || "Unknown Sender",
-      subject: message.payload.headers.find(h => h.name === "Subject")?.value || "No Subject",
+      from: message.payload.headers.find((h) => h.name === "From")?.value || "Unknown Sender",
+      subject: message.payload.headers.find((h) => h.name === "Subject")?.value || "No Subject",
       body,
     });
   } catch (error) {
