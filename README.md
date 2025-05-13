@@ -80,4 +80,9 @@ PORT=5000
 - Redirect URI: http://localhost:5000/auth/google/callback
 - Use the generated credentials in your .env
 
+### Screenshots
 
+[home](./frontend/src/assets/home.png)
+[login](./frontend/src/assets/login.png)
+[emaiol page](./frontend/src/assets/email.png)
+[preview](./frontend/src/assets/email%20preview.png)
